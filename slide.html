@@ -20,7 +20,11 @@
   <!-- DÙNG ĐÚNG CDN pdf.js UMD -->
   <script src="https://unpkg.com/pdfjs-dist@4.2.67/build/pdf.min.js"></script>
   <script>
-    var url = 'slide.pdf'; // hoặc '/slide-voi-github-page/slide.pdf' nếu không cùng thư mục
+    // KHẮC PHỤC LỖI "pdfjsLib is not defined"
+    window.pdfjsLib = window['pdfjs-dist/build/pdf'];
+  </script>
+  <script>
+    var url = 'slide.pdf';
 
     var pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null;
     var canvas = document.getElementById('pdf-canvas'), ctx = canvas.getContext('2d');
