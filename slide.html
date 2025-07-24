@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Slide Presentation</title>
+  <style>
+    html, body { margin:0; padding:0; height:100%; background:#000; }
+    #pdf-canvas { display:block; margin:auto; background:#111; }
+    #slide-controls { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); color:#fff; }
+  </style>
+</head>
+<body>
+  <canvas id="pdf-canvas"></canvas>
+  <div id="slide-controls">
+    <button onclick="prevPage()">◀</button>
+    <span id="page-info"></span>
+    <button onclick="nextPage()">▶</button>
+    <button onclick="fullscreen()">⛶</button>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
+  <script>
+    var url = '../slide.pdf';
+    var pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null;
+    var canvas = document.getElementById('pdf-canvas'), ctx = canvas.getContext('2d');
+
+    pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+      pdfDoc = pdfDoc_;
+      renderPage(pageNum);
+    });
+
+    function renderPage(num) {
+      pageRendering = true;
+      pdfDoc.getPage(num).then(function(page) {
+        var viewport = page.getViewport({ scale: 1.7 });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        var renderContext = { canvasContext: ctx, viewport: viewport };
+        var renderTask = page.render(renderContext);
+        renderTask.promise.then(function() {
+          pageRendering = false;
+          document.getElementById('page-info').textContent = "Page " + num + " / " + pdfDoc.numPages;
+        });
+      });
+    }
+
+    function queueRenderPage(num) {
+      if (pageRendering) {
+        pageNumPending = num;
+      } else {
+        renderPage(num);
+      }
+    }
+
+    function prevPage() {
+      if (pageNum <= 1) return;
+      pageNum--;
+      queueRenderPage(pageNum);
+    }
+
+    function nextPage() {
+      if (pageNum >= pdfDoc.numPages) return;
+      pageNum++;
+      queueRenderPage(pageNum);
+    }
+
+    function fullscreen() {
+      if (canvas.requestFullscreen) canvas.requestFullscreen();
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowLeft') prevPage();
+      if (e.key === 'ArrowRight') nextPage();
+      if (e.key === 'f') fullscreen();
+    });
+  </script>
+</body>
+</html>
