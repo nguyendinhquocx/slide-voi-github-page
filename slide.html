@@ -17,10 +17,10 @@
     <button onclick="nextPage()">▶</button>
     <button onclick="fullscreen()">⛶</button>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
+  <!-- DÙNG ĐÚNG CDN pdf.js UMD -->
+  <script src="https://unpkg.com/pdfjs-dist@4.2.67/build/pdf.min.js"></script>
   <script>
-    // Sửa lại đường dẫn này!
-    var url = 'slide.pdf'; // Nếu file slide.pdf nằm cùng thư mục với slide.html
+    var url = 'slide.pdf'; // hoặc '/slide-voi-github-page/slide.pdf' nếu không cùng thư mục
 
     var pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null;
     var canvas = document.getElementById('pdf-canvas'), ctx = canvas.getContext('2d');
