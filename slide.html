@@ -19,13 +19,17 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
   <script>
-    var url = '../slide.pdf';
+    // Sửa lại đường dẫn này!
+    var url = 'slide.pdf'; // Nếu file slide.pdf nằm cùng thư mục với slide.html
+
     var pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null;
     var canvas = document.getElementById('pdf-canvas'), ctx = canvas.getContext('2d');
 
     pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
       pdfDoc = pdfDoc_;
       renderPage(pageNum);
+    }).catch(function(err){
+      alert("Không load được file PDF: " + err.message);
     });
 
     function renderPage(num) {
